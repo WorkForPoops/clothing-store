@@ -1,57 +1,49 @@
-import React, { Suspense } from 'react';
-import './App.css';
-import BottomNavbar from './components/BottomNavbar/BottomNavbar';
-import TopNavbar from './components/TopNavbar/TopNavbar';
-import HomePage from './components/HomePage/HomePage';
-import FooterPage from './components/Footer/Footer';
-import { Route, Redirect } from 'react-router-dom';
-import AllContainer from './components/CardPages/AllCard/AllContainer';
-import ClothingDetailsContainer from './components/CardPages/ClothingDetails/ClothingDetailsContainer';
-import CartContainer from './components/Cart/CartIcon/CartContainer';
-import CartPageContainer from './components/Cart/CartPage/CartPageContainer';
-import TopNavbarMobile from './components/TopNavbar/TopNavbarMobile';
-import Contact from './components/Contact/Contact';
+import React from 'react';
+import { withRouter, Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from './redux/redux-store';
+import './App.css'
+import Navbar from './components/Navbar/Navbar';
+import NewsContainer from './components/News/NewsContainer';
 
-const ClothingCardContainer = React.lazy(() => import ('./components/CardPages/ClothingCard/ClothingCardContainer'));
+class App extends React.Component {
 
-export default function App() {
+  // componentDidMount() {
+  //   this.props.initializeApp();
+  // }
 
-  console.log(window.innerWidth);
+  
 
-  return (
-    <div>
-
-      {window.innerWidth > 680 ?
-      <TopNavbar />
-      :
-      <TopNavbarMobile />
-      }
-
-      <BottomNavbar />
-
-      <CartContainer />
-
-      <Route path='/home' render={() => <HomePage />}/>
-      <Route path='/:sex/all' render={() => <AllContainer />}/>
-      <Route path='/:sex/clothes/detail/:type/:name/:id' render={() => <ClothingDetailsContainer />}/>
-      <Route exact path='/:sex/clothes/:type' render={() => {
-        return(
-          <Suspense fallback={
-            <div className="text-center m-5">
-              <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>  
-          }>
-            <ClothingCardContainer />
-          </Suspense>
-        )
-      }}/>
-      <Route exact path='/shop-cart' render={() => <CartPageContainer />}/> 
-      <Route exact path='/contact' render={() => <Contact />}/> 
-      <Route path='/' exact render={ () => <Redirect to={'/home'}/> }/>
-
-      <FooterPage />
-    </div>
-  );
+  render() {
+    return (
+      <div>
+        <Navbar />
+        <NewsContainer />
+      </div>
+    );
+  }
 }
+
+const mapStateToProps = (state) =>({
+
+})
+
+let AppContainer = compose(
+  withRouter,
+  connect(mapStateToProps, ))(App);
+
+const MainApp = (props) => {
+  return(
+    <BrowserRouter>
+        <Provider store={store}>
+            <AppContainer />
+        </Provider>
+    </BrowserRouter>
+  )
+}
+
+export default MainApp;
+
